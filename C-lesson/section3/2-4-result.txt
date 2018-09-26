@@ -1,0 +1,12 @@
+do
+
+[okuya@luna section3]$ time ./2-4-double
+
+real	0m0.001s
+user	0m0.000s
+sys	0m0.001s
+[okuya@luna section3]$ time ./2-4-float
+
+real	0m0.108s
+user	0m0.108s
+sys	0m0.000s
