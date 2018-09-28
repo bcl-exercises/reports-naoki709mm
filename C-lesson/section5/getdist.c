@@ -19,6 +19,12 @@ void usage_print(){ //usageを表示後、終了
   printf("-g) Show histogram\n");
 }
 
+void error_print(){
+  
+  fprintf(stderr, "メモリが確保できません\n");
+  exit(1);
+}
+
 char Options(char *opt){ //オプション判定 -aだとa,-gだとgを返す
   
   if(strcmp(opt,"-h") == 0){
@@ -75,26 +81,14 @@ void opt_g(double dat[] ,int n){
 
   t=1/T; //Tの逆数
   
-  hst=(int*)calloc(t,sizeof(int)); //メモリの確保
+  if((hst=(int*)calloc(t,sizeof(int))) == NULL) //メモリの確保ができなかった場合、エラー出力
+    error_print();
   
-  if(hst == NULL){ //メモリの確保ができなかった場合、エラー出力
-    fprintf(stderr, "メモリが確保できません\n");
-    exit(1);
-  }
-
-  pnt=(char**)calloc(t,sizeof(char*)); //2次元配列分のメモリの確保
-  for(i=0 ;i<t ;i++)
-    pnt[i]=(char*)calloc(DAT,sizeof(char*));
-  
-  if(pnt == NULL){ //メモリの確保ができなかった場合、エラー出力
-    fprintf(stderr, "メモリが確保できません\n");
-    exit(1);
-  }
-  for(i=0 ;i<t ;i++)
-    if(pnt[i] == NULL){
-      fprintf(stderr, "メモリが確保できません\n");
-      exit(1);
-    }
+  if((pnt=(char**)calloc(t,sizeof(char*))) == NULL) //メモリの確保ができなかった場合、エラー出力
+    error_print();
+  loop(i ,t)
+    if((pnt[i]=(char*)calloc(DAT,sizeof(char*))) == NULL)
+      error_print();
   
   loop(i ,n){ //ポイント数
     tmp=dat[i]/T;
@@ -113,6 +107,10 @@ void opt_g(double dat[] ,int n){
   }
   
   free(hst);
+  free(pnt);
+  loop(i ,t)
+    free(pnt[i]);
+  
 }
     
 int main(int argc ,char *argv[]){
