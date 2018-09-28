@@ -23,14 +23,11 @@ int main(int argc ,char *argv[]){
   
   n=atoi(argv[1]);
   
-  a=(int**)calloc(n,sizeof(int*)); //2次元配列分のメモリの確保
-  loop(i ,n)
-    a[i]=(int*)calloc(n,sizeof(int*));
-  
-  if(a == NULL) //メモリの確保ができなかった場合、エラー出力
+  //2次元配列分のメモリの確保
+  if((a=(int**)calloc(n,sizeof(int*))) == NULL) //メモリの確保ができなかった場合、エラー出力
     error_print();
   loop(i ,n){
-    if(a[i] == NULL)
+    if((a[i]=(int*)calloc(n,sizeof(int*))) == NULL)
       error_print();
   }
   
