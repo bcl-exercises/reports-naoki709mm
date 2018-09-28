@@ -4,50 +4,53 @@
 #include <math.h>
 #include </home2/reports-naoki709mm/C-lesson/section5/mylib.h>
 
-#define NUM 3
+#define NUM 4
 #define DAT 1000
+#define FILES
 #define T 0.1
 #define loop(i,n) for(i=0 ;i<n ;i++)
 #define sqr(x) ((x)*(x))
 
+#ifdef FILES //マクロ変数がFILESだった場合出力先をfwにす
+#define OUTPUT fw
+#else
+#define OUTPUT stdout
+#endif
+
 void usage_print(){ //usageを表示後、終了
-  
-  printf("Usage : getdist [option] <file>\n");
+  printf("Usage : getdist [option] <file1> <file2>\n");
   printf("option :\n");
   printf("-h) Show this message\n");
   printf("-a) Show average,standard deviation,Min and Max\n");
   printf("-g) Show histogram\n");
 }
 
-void error_print(){
+void error_print(){ //エラー出力
   
   fprintf(stderr, "メモリが確保できません\n");
   exit(1);
 }
 
-char Options(char *opt){ //オプション判定 -aだとa,-gだとgを返す
+char judg_option(char *opt){ //オプション判定 -aだとa,-gだとgを返す
   
-  if(strcmp(opt,"-h") == 0){
-    usage_print();
-    exit(0);
-  }
-  
-  if(strcmp(opt,"-a") == 0 )
-    return 'a';
-  else if(strcmp(opt,"-g") == 0)
-    return 'g';
-  else{
-    usage_print();
-    exit(1);
+  switch((int)opt[1]){ //-を除いてint型に変換
+    case (int)'h':
+      usage_print();
+      exit(0);
+    case (int)'a':
+    case (int)'g':
+      return opt[1];
+    default:
+      usage_print();
+      exit(1);
+      
   }
 }
 
-void opt_a(double dat[] ,int n){
+void statistics(double dat[] ,int n ,FILE *fw){ 
   
   int i;
-  double sum=0.0;
-  double std;
-  double ave;
+  double sum=0.0,std,ave;
   double min=dat[0],max=dat[0];
   
   loop(i ,n){ //平均値と最大値と最小値
@@ -64,52 +67,39 @@ void opt_a(double dat[] ,int n){
     sum+=sqr(dat[i]-ave);
   std=sqrt(sum/n);
 
-  printf("AVE : %lf\n",ave);
-  printf("STD : %lf\n",std);
-  printf("MIN : %lf\n",min);
-  printf("MAX : %lf\n",max);
+  fprintf(OUTPUT ,"Ave : %lf\n",ave);
+  fprintf(OUTPUT ,"Std : %lf\n",std);
+  fprintf(OUTPUT ,"Min : %lf\n",min);
+  fprintf(OUTPUT ,"Max : %lf\n",max);
 }
 
-void opt_g(double dat[] ,int n){
+void histogram(double dat[] ,int n ,FILE *fw){
   
   int i,j;
-  int tmp;
+  int pnt;
   int t;
-  double min=0.0,max=T;
+  double tmp;
   int *hst;
-  char **pnt;
 
   t=1/T; //Tの逆数
   
   if((hst=(int*)calloc(t,sizeof(int))) == NULL) //メモリの確保ができなかった場合、エラー出力
     error_print();
   
-  if((pnt=(char**)calloc(t,sizeof(char*))) == NULL) //メモリの確保ができなかった場合、エラー出力
-    error_print();
-  loop(i ,t)
-    if((pnt[i]=(char*)calloc(DAT,sizeof(char*))) == NULL)
-      error_print();
-  
   loop(i ,n){ //ポイント数
-    tmp=dat[i]/T;
-    hst[tmp]++;
-  }
-  
-  loop(i ,t){ //配列pntに個数分*を入れる
-    loop(j ,hst[i])
-      pnt[i][j]='*';
+    pnt=dat[i]/T;
+    hst[pnt]++;
   }
 
   loop(i ,t){
-    printf("%4.2f - %4.2f : %s\n",min,max,pnt[i]);
-    min=max;
-    max+=T;
+    tmp=i*T;
+    fprintf(OUTPUT ,"%4.2f - %4.2f : ",tmp,tmp+T);
+    loop(j ,hst[i])
+      fprintf(OUTPUT ,"*");
+    fprintf(OUTPUT ,"\n");
   }
   
   free(hst);
-  free(pnt);
-  loop(i ,t)
-    free(pnt[i]);
   
 }
     
@@ -117,11 +107,13 @@ int main(int argc ,char *argv[]){
   
   int n=0;
   char *tmp;
-  char *fname;
+  char *fname_r;
+  char *fname_w;
   char opt;
   double dat[DAT];
   double a;
   FILE *fr;
+  FILE *fw;
   
   if(argc != NUM){ //引数が2つなければ終了
     usage_print();
@@ -129,22 +121,27 @@ int main(int argc ,char *argv[]){
   }
   
   tmp=argv[1]; //オプション判定
-  opt=Options(tmp); //optにaかgがはいる
+  opt=judg_option(tmp); //optにaかgがはいる
   
-  fname=argv[2]; //ファイルオープン
-  fr=fRopen(fname);
+  fname_r=argv[2]; //ファイルオープン
+  fr=fRopen(fname_r);
+  
+  fname_w=argv[3];
+  fw=fWopen(fname_w);
   
   while(fscanf(fr ,"%lf\n" ,&a) != EOF){
     dat[n]=a;
     n++;
   }
   
-  if(opt == 'a')
-    opt_a(dat ,n);
+  switch((int)opt){
+    case (int)'a':
+      statistics(dat ,n ,fw);
+      break;
+    case (int)'g':
+      histogram(dat ,n ,fw);
+      break;
+  }
   
-  if(opt == 'g')
-    opt_g(dat ,n);
-
   return 0;
 }
-  

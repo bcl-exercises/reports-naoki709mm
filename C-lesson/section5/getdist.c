@@ -25,24 +25,23 @@ void error_print(){
   exit(1);
 }
 
-char Options(char *opt){ //オプション判定 -aだとa,-gだとgを返す
+char judg_option(char *opt){ //オプション判定 -aだとa,-gだとgを返す
   
-  if(strcmp(opt,"-h") == 0){
-    usage_print();
-    exit(0);
-  }
-  
-  if(strcmp(opt,"-a") == 0 )
-    return 'a';
-  else if(strcmp(opt,"-g") == 0)
-    return 'g';
-  else{
-    usage_print();
-    exit(1);
+  switch((int)opt[1]){ //-を除いてint型に変換
+    case (int)'h':
+      usage_print();
+      exit(0);
+    case (int)'a':
+    case (int)'g':
+      return opt[1];
+    default:
+      usage_print();
+      exit(1);
+      
   }
 }
 
-void opt_a(double dat[] ,int n){
+void statistics(double dat[] ,int n){
   
   int i;
   double sum=0.0;
@@ -70,46 +69,33 @@ void opt_a(double dat[] ,int n){
   printf("MAX : %lf\n",max);
 }
 
-void opt_g(double dat[] ,int n){
+void histogram(double dat[] ,int n){
   
   int i,j;
-  int tmp;
+  int pnt;
   int t;
-  double min=0.0,max=T;
+  double tmp;
   int *hst;
-  char **pnt;
-
+  
   t=1/T; //Tの逆数
   
   if((hst=(int*)calloc(t,sizeof(int))) == NULL) //メモリの確保ができなかった場合、エラー出力
     error_print();
   
-  if((pnt=(char**)calloc(t,sizeof(char*))) == NULL) //メモリの確保ができなかった場合、エラー出力
-    error_print();
-  loop(i ,t)
-    if((pnt[i]=(char*)calloc(DAT,sizeof(char*))) == NULL)
-      error_print();
-  
   loop(i ,n){ //ポイント数
-    tmp=dat[i]/T;
-    hst[tmp]++;
-  }
-  
-  loop(i ,t){ //配列pntに個数分*を入れる
-    loop(j ,hst[i])
-      pnt[i][j]='*';
+    pnt=dat[i]/T;
+    hst[pnt]++;
   }
 
   loop(i ,t){
-    printf("%4.2f - %4.2f : %s\n",min,max,pnt[i]);
-    min=max;
-    max+=T;
+    tmp=i*T;
+    printf("%4.2f - %4.2f : ",tmp,tmp+T);
+    loop(j ,hst[i])
+      printf("*");
+    printf("\n");
   }
   
   free(hst);
-  free(pnt);
-  loop(i ,t)
-    free(pnt[i]);
   
 }
     
@@ -129,7 +115,7 @@ int main(int argc ,char *argv[]){
   }
   
   tmp=argv[1]; //オプション判定
-  opt=Options(tmp); //optにaかgがはいる
+  opt=judg_option(tmp); //optにaかgがはいる
   
   fname=argv[2]; //ファイルオープン
   fr=fRopen(fname);
@@ -139,11 +125,14 @@ int main(int argc ,char *argv[]){
     n++;
   }
   
-  if(opt == 'a')
-    opt_a(dat ,n);
-  
-  if(opt == 'g')
-    opt_g(dat ,n);
+  switch((int)opt){
+    case (int)'a':
+      statistics(dat ,n);
+      break;
+    case (int)'g':
+      histogram(dat ,n);
+      break;
+  }
 
   return 0;
 }
