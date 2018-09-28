@@ -10,14 +10,15 @@ int main(int argc ,char *argv[]){
   
   if(argc != NUM){ //引数の数がNUM個でなかった場合以下を表示してプログラムを終了する
     printf("Usage : sum <num1> <num2>\n");
+    return 1; //[修正] return 1 で終了する
   }
   
-  else{
-    for(i=0 ;i<NUM ;i++){
-      sum+=atof(argv[i]);
-    }
-    printf("Ans : %lf\n",sum);
-  }
+  
+  for(i=0 ;i<NUM ;i++)
+    sum+=atof(argv[i]);
+  
+  printf("Ans : %lf\n",sum);
+  
 
   return 0;
 }

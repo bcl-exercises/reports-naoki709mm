@@ -7,8 +7,8 @@ FILE *fRopen(char *fname){
     fprintf(stderr, "Failed to open %s\n",fname);//エラー出力後プログラムを終了
     exit(1);
   }
-  else
-    return fp;
+  
+  return fp;
 }
 
 FILE *fWopen(char *fname){
@@ -17,8 +17,8 @@ FILE *fWopen(char *fname){
     fprintf(stderr, "Failed to open %s\n",fname);//エラー出力後プログラムを終了
     exit(1);
   }
-  else
-    return fp;
+  
+  return fp;
 }
 
 int main(int argc ,char *argv[]){

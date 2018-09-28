@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define loop(i ,n) for(i=0 ;i<n ;i++)
+
+void error_print(){
+  
+  fprintf(stderr, "メモリが確保できません\n");
+  
+  exit(1);
+}
+  
 int main(int argc ,char *argv[]){
   
   int n;
@@ -15,29 +24,26 @@ int main(int argc ,char *argv[]){
   n=atoi(argv[1]);
   
   a=(int**)calloc(n,sizeof(int*)); //2次元配列分のメモリの確保
-  for(i=0 ;i<n ;i++)
+  loop(i ,n)
     a[i]=(int*)calloc(n,sizeof(int*));
   
-  if(a == NULL){ //メモリの確保ができなかった場合、エラー出力
-    fprintf(stderr, "メモリが確保できません\n");
-    return 1;
+  if(a == NULL) //メモリの確保ができなかった場合、エラー出力
+    error_print();
+  loop(i ,n){
+    if(a[i] == NULL)
+      error_print();
   }
-  for(i=0 ;i<n ;i++)
-    if(a[i] == NULL){
-      fprintf(stderr, "メモリが確保できません\n");
-      return 1;
-    }
   
-  for(i=0 ;i<n ;i++) //単位行列の作成
+  loop(i ,n) //単位行列の作成
     a[i][i]=1;
   
-  for(i=0 ;i<n ;i++){
-    for(j=0 ;j<n ;j++)
+  loop(i ,n){
+    loop(j ,n)
       printf("%d  ",a[i][j]);
     printf("\n");
   }
   
-  for(i=0 ;i<n ;i++)
+  loop(i ,n)
     free(a[i]);
   free(a);
   
