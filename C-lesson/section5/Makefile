@@ -1,6 +1,7 @@
 GOC = gcc
 CFLAGS = -Wall -O2
 
+mylib2: mylib2.c
 genrand: genrand.c
 	${GOC} ${CELAGS} -c -o $@ $< 
 
