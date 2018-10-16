@@ -10,9 +10,10 @@ int main(void){
   
   for(t=0 ;t<1/H ;t++){ //オイラー法を刻み値の逆数回繰り返す
     x+=H*x;
+    printf("e = %lf\n" ,x);
   }
   
-  printf("オイラー法 : e = %lf\n" ,x);
+  printf("\n");
   printf("  真値     : e = %lf\n" ,exp(1));
   
   
