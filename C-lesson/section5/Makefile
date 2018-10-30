@@ -3,7 +3,7 @@ CFLAGS = -Wall -O2
 
 mylib2: mylib2.c
 genrand: genrand.c
-	${GOC} ${CELAGS} -c -o $@ $< 
+	${GOC} ${CELAGS} -o $@ $< 
 
 getdist.o: getdist.c
 getdist_x.o: getdist.c

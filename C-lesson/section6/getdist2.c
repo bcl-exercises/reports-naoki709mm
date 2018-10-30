@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include </home2/reports-naoki709mm/C-lesson/section6/mylib.h>
+#include "mylib.h"
 
 #define NUM 2
 #define DAT 1000
