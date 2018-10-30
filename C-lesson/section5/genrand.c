@@ -8,7 +8,7 @@ int main(int argc ,char *argv[]){
   
   int n;
   int i;
-
+  
   if(argc != NUM){ 
     printf("Usage : genrand <num>\n");
     return 1;
