@@ -6,9 +6,10 @@
 int main(void){
   
   int t;
+  int h=1/H;
   double x=1.0;
   
-  for(t=0 ;t<1/H ;t++){ //オイラー法を刻み値の逆数回繰り返す
+  for(t=0 ;t<h ;t++){ //オイラー法を刻み値の逆数回繰り返す
     x+=H*x;
     printf("e = %lf\n" ,x);
   }
