@@ -42,9 +42,9 @@ int main(int argc ,char *argv[]){
   vx=v*cos(theta); //速度をx ,y方向に分ける
   vy=v*sin(theta);
   
-  do{
-    vy=vy-h*G;
+  do{ //オイラー法
     y=y+h*vy;
+    vy=vy-h*G;
     x=x+h*vx;
   }while(y >= 0);
   
