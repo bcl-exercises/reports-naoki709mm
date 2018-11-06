@@ -1,0 +1,12 @@
+#!/bin/sh
+
+dir=($(ls -F))
+
+extgz="tar.gz"
+extbz2="tar.bz2"
+
+for dir_value in ${dir[@]}; do
+    if [ ${dir_value#*.} = ${extgz} ]; then
+	echo ${dir_value%%.*}.$extbz2 #.の２つ目からそれ以下を変換
+    fi
+done

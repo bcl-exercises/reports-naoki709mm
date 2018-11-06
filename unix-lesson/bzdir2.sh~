@@ -1,0 +1,7 @@
+#!/bin/sh
+
+dir=($(ls | grep /))
+
+for dir_value in ${dir[@]); do
+    echo ${dir_value}
+done

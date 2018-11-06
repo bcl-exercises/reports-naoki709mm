@@ -43,9 +43,9 @@ int main(int argc ,char *argv[]){
   vy=v*sin(theta);
   
   do{ //オイラー法
-    y=y+h*vy;
-    vy=vy-h*G;
-    x=x+h*vx;
+    y+=h*vy;
+    vy-=h*G;
+    x+=h*vx;
   }while(y >= 0);
   
   printf("%lf\n",x);

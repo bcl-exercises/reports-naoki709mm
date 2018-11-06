@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo ssh $USER@${0##*/}
